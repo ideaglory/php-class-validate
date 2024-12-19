@@ -23,7 +23,7 @@ class Validate
 
     public function __construct(array $data)
     {
-        $this->data = $this->sanitize($data);
+        $this->data = $data;
     }
 
     /**
@@ -253,13 +253,13 @@ class Validate
     }
 
     /**
-     * Get the validated data.
+     * Get the sanitized data.
      *
      * @return array
      */
-    public function validated(): array
+    public function sanitized(): array
     {
-        return empty($this->errors) ? $this->data : [];
+        return $this->sanitize($this->data);
     }
 
     /**
@@ -341,8 +341,7 @@ class Validate
 /*
 
 ---------------------- Example 1: Simple Validation ----------------------
-
-$validate = new Validate([
+$data = [
     'name' => 'John_Doe',
     'emails' => ['email' => 'john.doe@example.com', 'email_confirm' => 'john.doe@example.com'],
     'age' => 25,
@@ -353,7 +352,9 @@ $validate = new Validate([
     'status' => 'inactive',
     'first_name' => 'John',
     'last_name' => 'Doe', 
-]);
+];
+
+$validate = new Validate($data);
 
 $validate->setDefaults([
     'age' => 30,
@@ -404,6 +405,7 @@ $validate->setMessages([
 
 if ($validate->validate()) {
     echo "Validation passed!";
+    $data = $validate->sanitized(); // Replace the orginal data with sanitized data optionally
 } else {
     print_r($validate->errors());
 }
@@ -421,7 +423,7 @@ $validate->addCustomRule('even', function ($value) {
 });
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -448,7 +450,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -470,7 +472,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -494,7 +496,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
