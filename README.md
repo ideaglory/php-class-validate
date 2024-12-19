@@ -33,18 +33,20 @@ Each rule checks a specific condition on the field and returns an error message 
 ## Example Code:
 
 ```php
-$validate = new Validate([
+$data = [
     'name' => 'John_Doe',
     'emails' => ['email' => 'john.doe@example.com', 'email_confirm' => 'john.doe@example.com'],
     'age' => 25,
     'active' => true,
-    'website' => 'https://ideaglory.com',
+    'website' => 'https://example.com',
     'birthdate' => '1999-12-31',
     'category' => 'technology',
     'status' => 'inactive',
     'first_name' => 'John',
-    'last_name' => 'Doe',
-]);
+    'last_name' => 'Doe', 
+];
+
+$validate = new Validate($data);
 
 $validate->setDefaults([
     'age' => 30,
@@ -97,6 +99,7 @@ $validate->setMessages([
 
 if ($validate->validate()) {
     echo "Validation passed!";
+    $data = $validate->sanitized(); // Replace the orginal data with sanitized data optionally
 } else {
     print_r($validate->errors());
 }
@@ -114,7 +117,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -139,7 +142,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -160,7 +163,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -189,7 +192,7 @@ $validate->addCustomRule('even', function ($value) {
 });
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -221,7 +224,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -247,7 +250,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
@@ -275,7 +278,7 @@ $validate->setRules([
 ]);
 
 if ($validate->validate()) {
-    print_r($validate->validated());
+    print_r($validate->sanitized());
 } else {
     print_r($validate->errors());
 }
