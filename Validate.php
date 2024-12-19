@@ -124,7 +124,7 @@ class Validate
         // Handle built-in rules
         switch ($rule) {
             case 'required':
-                if (empty($value)) {
+                if ($value === null || trim($value) === "") {
                     $this->addError($field, $this->getErrorMessage($field, $rule, "$field is required."));
                 }
                 break;
@@ -134,7 +134,7 @@ class Validate
                 }
                 break;
             case 'integer':
-                if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                if (filter_var(trim($value), FILTER_VALIDATE_INT) === false) {
                     $this->addError($field, $this->getErrorMessage($field, $rule, "$field must be an integer."));
                 }
                 break;
