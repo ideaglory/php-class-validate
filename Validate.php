@@ -190,6 +190,12 @@ class Validate
                     $this->addError($field, $this->getErrorMessage($field, $rule, "$field must be numeric."));
                 }
                 break;
+            case 'equal':
+                $compareFieldValue = $this->getValueByPath($param, $this->data);
+                if ($value !== $compareFieldValue) {
+                    $this->addError($field, $this->getErrorMessage($field, $rule, "$field must be equal to $param."));
+                }
+                break;
             case 'in':
                 if (!in_array($value, explode(',', $param))) {
                     $this->addError($field, $this->getErrorMessage($field, $rule, "$field must be one of the following values: $param."));
@@ -321,6 +327,7 @@ class Validate
  * - 'alpha'       : Ensures the field contains only alphabetic characters (A-Z, a-z).
  * - 'alpha_dash'  : Ensures the field contains only alphanumeric characters, dashes, and underscores.
  * - 'numeric'     : Ensures the field is numeric (integer or float).
+ * - 'equal'       : Ensures the field is equal to another field.
  * - 'in'          : Ensures the field value is one of the specified values (comma-separated).
  * - 'not_in'      : Ensures the field value is not one of the specified values (comma-separated).
  * - 'date'        : Ensures the field is a valid date (in 'Y-m-d' format).
@@ -337,7 +344,7 @@ class Validate
 
 $validate = new Validate([
     'name' => 'John_Doe',
-    'email' => 'john.doe@example.com',
+    'emails' => ['email' => 'john.doe@example.com', 'email_confirm' => 'john.doe@example.com'],
     'age' => 25,
     'active' => true,
     'website' => 'https://example.com',
@@ -355,7 +362,8 @@ $validate->setDefaults([
 
 $validate->setRules([
     'name' => 'required|string|alpha_dash',       // name must be required, string, and alpha_dash
-    'email' => 'required|email',                  // email must be required and a valid email
+    'emails.email' => 'required|email',                  // email must be required and a valid email
+    'emails.email_confirm' => 'required|email|equal:emails.email', // email_confirm must be required and a valid email, also need match emails.email
     'age' => 'required|numeric|min:18|max:60',    // age must be required, numeric, min 18, max 60
     'active' => 'required|boolean',               // active must be required and a boolean
     'website' => 'required|url',                  // website must be required and a valid URL
@@ -369,8 +377,9 @@ $validate->setRules([
 $validate->setMessages([
     'name.required' => 'The name is mandatory.',
     'name.alpha_dash' => 'The name can only contain letters, numbers, dashes, and underscores.',
-    'email.required' => 'The email is mandatory.',
-    'email.email' => 'The email must be a valid email address.',
+    'emails.email.required' => 'The email is mandatory.',
+    'emails.email.email' => 'The email must be a valid email address.',
+    'emails.email_confirm.equal' => 'Emails does not match.',
     'age.required' => 'The age is mandatory.',
     'age.numeric' => 'The age must be a number.',
     'age.min' => 'The age must be at least 18.',
